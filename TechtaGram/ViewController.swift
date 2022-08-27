@@ -10,6 +10,9 @@ import UIKit
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @IBOutlet var cameraImageView: UIImageView!
+    
+    var originalImage: UIImage!
+    var filter: CIFilter!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,10 +50,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         cameraImageView.image = info[.editedImage] as? UIImage
         
+        originalImage = cameraImageView.image
+        
         dismiss(animated: true, completion: nil)
     }
     
-    //p.20からだよ
+    //p.21からだよ
 
 }
 
