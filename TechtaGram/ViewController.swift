@@ -36,15 +36,46 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @IBAction func savePhoto(){
-        
+        UIImageWriteToSavedPhotosAlbum(cameraImageView.image!, nil, nil, nil)
     }
     
     @IBAction func openAlbum(){
-        
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            let picker = UIImagePickerController()
+            picker.sourceType = .photoLibrary
+            picker.delegate = self
+            
+            picker.allowsEditing = true
+            present(picker, animated: true, completion: nil)
+        }
     }
     
     @IBAction func snsPhoto(){
+        let shareText = "写真加工"
+        //投稿する画像の選択
+        let shareImage = cameraImageView.image!
         
+        let activityItems: [Any] = [shareText, shareImage]
+        let activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        let excludedActivityTypes = [UIActivity.ActivityType.postToWeibo, .saveToCameraRoll, .print]
+        activityViewController.excludedActivityTypes = excludedActivityTypes
+        
+        present(activityViewController, animated: true, completion: nil)
+    }
+    
+    @IBAction func colorFilter(){
+        let filterImage: CIImage = CIImage(image: originalImage)!
+        filter = CIFilter(name: "CIColorControls")
+        filter.setValue(filterImage, forKey: kCIInputImageKey)
+        
+        //彩度
+        filter.setValue(1.0, forKey: "inputSaturation")
+        filter.setValue(0.5, forKey: "inputBrightness")
+        filter.setValue(2.5, forKey: "inputContrast")
+        
+        let ctx = CIContext(options: nil)
+        let cgImage = ctx.createCGImage(filter.outputImage!, from: filter.outputImage!.extent)
+        cameraImageView.image = UIImage(cgImage: cgImage!)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -54,8 +85,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         dismiss(animated: true, completion: nil)
     }
+
     
-    //p.21からだよ
 
 }
 
